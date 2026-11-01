@@ -1,9 +1,12 @@
-name: Build APK
+name: Build and Release APK
 
 on:
   push:
     branches: [ "**" ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -25,8 +28,18 @@ jobs:
       - name: Build Guard Debug APK
         run: ./gradlew assembleGuardDebug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Prepare APK for Release
+        run: |
+          mkdir -p release-apks
+          cp app/build/outputs/apk/guard/debug/*.apk release-apks/aerial-guard-debug.apk
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: aerial-guard-debug
-          path: app/build/outputs/apk/guard/debug/*.apk
+          tag_name: v1.76-fix-8A002-${{ github.run_number }}
+          name: Aerial 1.76 Guard (Fix 8A002 创维修复版 #${{ github.run_number }})
+          body: |
+            ### 创维 65A3 (8A002_A3) 音量键修复构建
+            - 针对 `8A002_A3` 机型关闭无障碍按键过滤（`FLAG_REQUEST_FILTER_KEY_EVENTS`），解决按一次音量键无限连击到极值的问题 (#1058)。
+            - **安装提示**：此版本为 Debug 签名，安装前请先在电视上**卸载原有官方版本**。
+          files: release-apks/aerial-guard-debug.apk
