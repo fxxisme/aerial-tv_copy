@@ -219,6 +219,8 @@ NanoHTTPD 监听 8790 端口，路径前缀是 8 位随机令牌（每次打开�
 
 `ignoresScreenBrightness`（#895，酷开 5S09_A3）：`screen_brightness` 写得进、`mActualBacklight` 也跟着变，但面板不变；控制中心不画亮度条，改为打开电视的图像设置（`openPictureSettings`，老酷开是 `com.tianci.setting` 的图像与声音）。
 
+`keyFilterOff`（#1058，创维 8A002_A3）：守护不请求无障碍按键过滤，音量等按键完全交给固件，主页只靠窗口事件接管，可能先闪原桌面。该机型有连续 repeat DOWN、没有 UP 的诊断；这项修正还等报告人真机验证。
+
 小米播放器兜底（框架没列 HDMI 的小米电视）的编号顺序：机型档案里 `labels` 写成「HDMI n」且有 `xiaomiSources` 的，先用它；然后才是 `hdmiN_order`；都没有就 22 + n。小米电视 4 固件 22.8 起 `hdmiN_order` 按 droidlogic 编号，和面板上的是反的（#923）。
 
 守护每秒查用量统计（`foregroundCheck`）的条件：Android 6 及以下，或原桌面里有不发窗口事件的桌面（`INVISIBLE_LAUNCHERS`：海信聚好看、腾讯极光 `com.ktcp.launcher`，#928）。唤醒和开机后的接管都会查「Aerial 被原桌面静默盖住」（`coveredAerial`：Aerial 没在前台，用量统计里最后到前台的是原桌面）。

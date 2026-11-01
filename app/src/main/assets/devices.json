@@ -61,6 +61,11 @@
       "ignoresScreenBrightness": true
     },
     {
+      "models": ["8A002_A3"],
+      "note": "Skyworth 65A3, T963/t5fl, Android 9: one volume press produces endless repeat DOWN events without UP in guarded mode (#1058). Leave keys to the firmware; reporter verification pending.",
+      "keyFilterOff": true
+    },
+    {
       "models": ["WTV43K1J"],
       "note": "Whaley (Helios, Android 5.0.2): the power light breathes after a cold boot until the stock launcher has been on screen once (#902, the reporter's adb test).",
       "bootStockMs": 1000

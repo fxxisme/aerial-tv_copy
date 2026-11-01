@@ -41,6 +41,10 @@ class DeviceProfileTest {
         assertNull(DeviceProfile.match(json, "MiTV-MFTP1", 0))
     }
 
+    @Test fun skyworthProfileLeavesKeysToFirmware() {
+        assertTrue(DeviceProfile.match(json, "8A002_A3", 0)!!.keyFilterOff)
+    }
+
     /** MiTV4-ANSM0: the fallback only below firmware 22 (#375). */
     @Test fun firmwareConditionHolds() {
         assertEquals(mapOf(7 to 23), DeviceProfile.match(json, "MiTV4-ANSM0", 8)!!.xiaomiFallbackSourceIds)
@@ -53,7 +57,7 @@ class DeviceProfileTest {
     }
 
     @Test fun jsonRoundTrips() {
-        val p = DeviceProfile(setOf(8, 3), mapOf(6 to "HDMI 1"), mapOf(6 to 23), mapOf(7 to 25), true, bootStockMs = 1500)
+        val p = DeviceProfile(setOf(8, 3), mapOf(6 to "HDMI 1"), mapOf(6 to 23), mapOf(7 to 25), true, bootStockMs = 1500, keyFilterOff = true)
         val back = DeviceProfile.parse(JSONObject(p.toJson().toString()))
         assertEquals(p.hiddenHardware, back.hiddenHardware)
         assertEquals(p.labels, back.labels)
@@ -61,6 +65,7 @@ class DeviceProfileTest {
         assertEquals(p.xiaomiFallbackSourceIds, back.xiaomiFallbackSourceIds)
         assertTrue(back.ignoresPictureBacklight)
         assertEquals(1500, back.bootStockMs)
+        assertTrue(back.keyFilterOff)
         assertTrue(DeviceProfile().isEmpty)
         assertFalse(DeviceProfile(bootStockMs = 1000).isEmpty)
         assertEquals("{}", DeviceProfile().toJson().toString())

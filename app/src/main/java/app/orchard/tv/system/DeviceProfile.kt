@@ -42,10 +42,17 @@ class DeviceProfile(
      * instead of a slider that changes nothing. Nothing on the TV tells this apart.
      */
     val ignoresScreenBrightness: Boolean = false,
+    /**
+     * Leave keys to the firmware instead of routing them through Home Guard's accessibility
+     * filter. Skyworth 8A002_A3 (T963, Android 9) reports endless volume-key repeats without a
+     * key-up in guarded mode (issue #1058). Window events still let the guard take Home, though
+     * the stock launcher may show first. Nothing readable on the TV identifies this incompatibility.
+     */
+    val keyFilterOff: Boolean = false,
 ) {
     val isEmpty get() = hiddenHardware.isEmpty() && labels.isEmpty() && xiaomiSourceIds.isEmpty() &&
         xiaomiFallbackSourceIds.isEmpty() && !ignoresPictureBacklight && bootStockMs <= 0 &&
-        !ignoresScreenBrightness
+        !ignoresScreenBrightness && !keyFilterOff
 
     /** The same fields `devices.json` uses, without the matching ones (models, buildMajorBelow, buildAtLeast). */
     fun toJson(): JSONObject = JSONObject().apply {
@@ -56,6 +63,7 @@ class DeviceProfile(
         if (ignoresPictureBacklight) put("ignoresPictureBacklight", true)
         if (bootStockMs > 0) put("bootStockMs", bootStockMs)
         if (ignoresScreenBrightness) put("ignoresScreenBrightness", true)
+        if (keyFilterOff) put("keyFilterOff", true)
     }
 
     /** Where the profile in use came from, for the diagnostics. */
@@ -137,6 +145,7 @@ class DeviceProfile(
                 ignoresPictureBacklight = o.optBoolean("ignoresPictureBacklight", false),
                 bootStockMs = o.optInt("bootStockMs", 0).coerceIn(0, 10_000),
                 ignoresScreenBrightness = o.optBoolean("ignoresScreenBrightness", false),
+                keyFilterOff = o.optBoolean("keyFilterOff", false),
             )
         }
 
